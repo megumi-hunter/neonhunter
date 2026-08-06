@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ネオンハンターズ SCORE BOARD</title>
+    <style>
+        :root {
+            --neon-pink: #ff007f;
+            --neon-blue: #00f0ff;
+            --neon-green: #39ff14;
+            --bg-dark: #0a0a16;
+            --card-bg: #12122c;
+        }
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background-color: var(--bg-dark);
+            color: #fff;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .container {
+            width: 100%;
+            max-width: 500px;
+        }
+        h1 {
+            text-align: center;
+            color: var(--neon-pink);
+            text-shadow: 0 0 10px var(--neon-pink);
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+        .subtitle {
+            text-align: center;
+            color: var(--neon-blue);
+            font-size: 14px;
+            margin-top: 0;
+            margin-bottom: 25px;
+            text-shadow: 0 0 5px var(--neon-blue);
+        }
+        .input-area {
+            background: var(--card-bg);
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid var(--neon-blue);
+            margin-bottom: 20px;
+            box-shadow: 0 0 10px rgba(0, 240, 255, 0.2);
+        }
+        input[type="text"] {
+            width: calc(100% - 22px);
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 6px;
+            border: 1px solid #444;
+            background: #1a1a3a;
+            color: white;
+            font-size: 16px;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background: var(--neon-pink);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            text-shadow: 0 0 5px #fff;
+            box-shadow: 0 0 10px rgba(255, 0, 127, 0.4);
+        }
+        button:active {
+            transform: scale(0.98);
+        }
+        .hunter-list {
+            background: var(--card-bg);
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid var(--neon-green);
+            box-shadow: 0 0 10px rgba(57, 255, 20, 0.2);
+        }
+        h2 {
+            color: var(--neon-green);
+            font-size: 20px;
+            margin-top: 0;
+            text-shadow: 0 0 5px var(--neon-green);
+        }
+        .item-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 5px;
+            border-bottom: 1px solid #222;
+        }
+        .item-text {
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .found-btn {
+            width: auto;
+            padding: 8px 15px;
+            background: #222;
+            border: 1px solid #555;
+            box-shadow: none;
+        }
+        .found-btn.checked {
+            background: var(--neon-green);
+            color: black;
+            text-shadow: none;
+            box-shadow: 0 0 10px var(--neon-green);
+            border-color: var(--neon-green);
+        }
+        .score-board {
+            text-align: center;
+            font-size: 24px;
+            margin-top: 20px;
+            padding: 15px;
+            background: #1a1a3a;
+            border-radius: 12px;
+            border: 2px dashed var(--neon-blue);
+        }
+        .score-num {
+            font-size: 36px;
+            color: var(--neon-blue);
+            text-shadow: 0 0 10px var(--neon-blue);
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>NEON HUNTER</h1>
+    <div class="subtitle">うじとうえだ 企画再現アプリ</div>
+
+    <!-- お題の登録エリア -->
+    <div class="input-area" id="setupArea">
+        <h2>🎯 ハンターする文字を登録</h2>
+        <p style="font-size: 12px; color: #aaa; margin-top:0;">見つけたい看板の文字を5つ入力してね！</p>
+        <input type="text" id="w1" value="スナック">
+        <input type="text" id="w2" value="24時間">
+        <input type="text" id="w3" value="麻雀">
+        <input type="text" id="w4" value="案内所">
+        <input type="text" id="w5" value="ビル">
+        <button onclick="startGame()">ゲームスタート！</button>
+    </div>
+
+    <!-- プレイ画面エリア -->
+    <div class="hunter-list" id="playArea" style="display: none;">
+        <h2>🏙️ 街に出て探せ！</h2>
+        <div id="listContainer"></div>
+       
+        <div class="score-board">
+            現在のスコア: <span class="score-num" id="scoreDisplay">0</span> 点
+ <!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ネオンハンターズ SCORE BOARD</title>
+    <!-- QRコードを自動で作るためのプログラムを読み込みます -->
+    <script src="https://apac01.safelinks.protection.outlook.com/?url=https%3A%2F%2Fcloudflare.com%2F&data=05%7C02%7C%7Cb9bea5986a904efbd65d08def386bf1e%7C84df9e7fe9f640afb435aaaaaaaaaaaa%7C1%7C0%7C639215957265374658%7CUnknown%7CTWFpbGZsb3d8eyJFbXB0eU1hcGkiOnRydWUsIlYiOiIwLjAuMDAwMCIsIlAiOiJXaW4zMiIsIkFOIjoiTWFpbCIsIldUIjoyfQ%3D%3D%7C0%7C%7C%7C&sdata=hLosttsR5rHig1SxsiIO%2Fi7gdk7fdejPrmzQMatUdkQ%3D&reserved=0"></script>
+    <style>
+        :root {
+            --neon-pink: #ff007f;
+            --neon-blue: #00f0ff;
+            --neon-green: #39ff14;
+            --bg-dark: #0a0a16;
+            --card-bg: #12122c;
+        }
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background-color: var(--bg-dark);
+            color: #fff;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .container {
+            width: 100%;
+            max-width: 500px;
+        }
+        h1 {
+            text-align: center;
+            color: var(--neon-pink);
+            text-shadow: 0 0 10px var(--neon-pink);
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+        .subtitle {
+            text-align: center;
+            color: var(--neon-blue);
+            font-size: 14px;
+            margin-top: 0;
+            margin-bottom: 25px;
+            text-shadow: 0 0 5px var(--neon-blue);
+        }
+        .input-area {
+            background: var(--card-bg);
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid var(--neon-blue);
+            margin-bottom: 20px;
+            box-shadow: 0 0 10px rgba(0, 240, 255, 0.2);
+        }
+        input[type="text"] {
+            width: calc(100% - 22px);
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 6px;
+            border: 1px solid #444;
+            background: #1a1a3a;
+            color: white;
+            font-size: 16px;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background: var(--neon-pink);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            text-shadow: 0 0 5px #fff;
+            box-shadow: 0 0 10px rgba(255, 0, 127, 0.4);
+        }
+        button:active {
+            transform: scale(0.98);
+        }
+        .hunter-list {
+            background: var(--card-bg);
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid var(--neon-green);
+            box-shadow: 0 0 10px rgba(57, 255, 20, 0.2);
+        }
+        h2 {
+            color: var(--neon-green);
+            font-size: 20px;
+            margin-top: 0;
+            text-shadow: 0 0 5px var(--neon-green);
+        }
+        .item-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 5px;
+            border-bottom: 1px solid #222;
+        }
+        .item-text {
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .found-btn {
+            width: auto;
+            padding: 8px 15px;
+            background: #222;
+            border: 1px solid #555;
+            box-shadow: none;
+        }
+        .found-btn.checked {
+            background: var(--neon-green);
+            color: black;
+            text-shadow: none;
+            box-shadow: 0 0 10px var(--neon-green);
+            border-color: var(--neon-green);
+        }
+        .score-board {
+            text-align: center;
+            font-size: 24px;
+            margin-top: 20px;
+            padding: 15px;
+            background: #1a1a3a;
+            border-radius: 12px;
+            border: 2px dashed var(--neon-blue);
+        }
+        .score-num {
+            font-size: 36px;
+            color: var(--neon-blue);
+            text-shadow: 0 0 10px var(--neon-blue);
+            font-weight: bold;
+        }
+        /* QRコードを表示するエリアのスタイル */
+        .qr-area {
+            margin-top: 30px;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: black;
+        }
+        .qr-area p {
+            margin: 0 0 10px 0;
+            font-weight: bold;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>NEON HUNTER</h1>
+    <div class="subtitle">うじとうえだ 企画再現アプリ</div>
+
+    <!-- お題の登録エリア -->
+    <div class="input-area" id="setupArea">
+        <h2>🎯 ハンターする文字を登録</h2>
+        <p style="font-size: 12px; color: #aaa; margin-top:0;">見つけたい看板の文字を5つ入力してね！</p>
+        <input type="text" id="w1" value="スナック">
+        <input type="text" id="w2" value="24時間">
+        <input type="text" id="w3" value="麻雀">
+        <input type="text" id="w4" value="案内所">
+        <input type="text" id="w5" value="ビル">
+        <button onclick="startGame()">ゲームスタート！</button>
+       
+        <!-- スマホへ移すためのボタンとQRコード表示場所 -->
+        <button onclick="makeQR()" style="background:var(--neon-blue); box-shadow:0 0 10px rgba(0,240,255,0.4); margin-top:15px;">📲 スマホに移すQRコードを作る</button>
+        <div id="qrcodeArea" class="qr-area" style="display:none;">
+            <p>📱 スマホのカメラで読み取ってね！</p>
+            <div id="qrcode"></div>
+        </div>
+    </div>
+
+    <!-- プレイ画面エリア -->
+    <div class="hunter-list" id="playArea" style="display: none;">
+        <h2>🏙️ 街に出て探せ！</h2>
+        <div id="listContainer"></div>
+       
+        <div class="score-board">
+            現在のスコア: <span class="score-num" id="scoreDisplay">0</span> 点
+        </div>
+        <button onclick="resetGame()" style="background:#444; box-shadow:none; margin-top:15px; font-size:12px; padding:5px;">やり直す</button>
+    </div>
+</div>
+
+<script>
+    let currentScore = 0;
+
+    function startGame() {
+        const words = [
+            document.getElementById('w1').value.trim(),
+            document.getElementById('w2').value.trim(),
+            document.getElementById('w3').value.trim(),
+            document.getElementById('w4').value.trim(),
+            document.getElementById('w5').value.trim()
+        ];
+
+        const container = document.getElementById('listContainer');
+        container.innerHTML = '';
+        currentScore = 0;
+        document.getElementById('scoreDisplay').innerText = currentScore;
+
+        words.forEach((word, index) => {
+            if(word !== "") {
+                const row = document.createElement('div');
+                row.className = 'item-row';
+                row.innerHTML = `
+                    <span class="item-text">🔹 ${word}</span>
+                    <button class="found-btn" id="btn-${index}" onclick="toggleFind(${index})">未発見</button>
+                `;
+                container.appendChild(row);
+            }
+        });
+
+        document.getElementById('setupArea').style.display = 'none';
+        document.getElementById('playArea').style.display = 'block';
+    }
+
+    function toggleFind(index) {
+        const btn = document.getElementById(`btn-${index}`);
+        if(btn.classList.contains('checked')) {
+            btn.classList.remove('checked');
+            btn.innerText = '未発見';
+            currentScore -= 1;
+        } else {
+            btn.classList.add('checked');
+            btn.innerText = '発見！(+1)';
+            currentScore += 1;
+        }
+        document.getElementById('scoreDisplay').innerText = currentScore;
+    }
+
+    function resetGame() {
+        document.getElementById('setupArea').style.display = 'block';
+        document.getElementById('playArea').style.display = 'none';
+    }
+
+    // 画面内にQRコードを強制的に作り出す魔法の関数
+    function makeQR() {
+        document.getElementById('qrcode').innerHTML = ""; // 1回リセット
+        // コードの中身そのものをテキストにしてQRコード化します
+        const currentCode = document.documentElement.outerHTML;
+       
+        // ネット上の無料変換システムを使ってQRコードを生成
+        const qrUrl = "https://apac01.safelinks.protection.outlook.com/?url=https%3A%2F%2Fqrserver.com%2F&data=05%7C02%7C%7Cb9bea5986a904efbd65d08def386bf1e%7C84df9e7fe9f640afb435aaaaaaaaaaaa%7C1%7C0%7C639215957265416736%7CUnknown%7CTWFpbGZsb3d8eyJFbXB0eU1hcGkiOnRydWUsIlYiOiIwLjAuMDAwMCIsIlAiOiJXaW4zMiIsIkFOIjoiTWFpbCIsIldUIjoyfQ%3D%3D%7C0%7C%7C%7C&sdata=E7oe1kGImdrFFtlBpnlwcam20I3kSTTPWdn2jswBYiI%3D&reserved=0" + encodeURIComponent(currentCode);
+       
+        const img = document.createElement('img');
+        img.src = qrUrl;
+        document.getElementById('qrcode').appendChild(img);
+        document.getElementById('qrcodeArea').style.display = 'flex';
+    }
+</script>
+
+</body>
+</html>
